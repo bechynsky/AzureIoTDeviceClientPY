@@ -12,6 +12,11 @@ class DeviceClient():
     _API_VERSION = 'api-version=2015-08-15-preview'
     _HEADER_AUTHORIZATION = 'Authorization'
 
+    """
+        iot_hub_name - name of your Azure IoT Hub
+        device_name - name of your device
+        key - security key for your device
+    """
     def __init__(self, iot_hub_name, device_name, key):
         self._iot_hub_name = iot_hub_name
         self._device_name = device_name
@@ -27,7 +32,10 @@ class DeviceClient():
                         '.azure-devices.net/devices/' + \
                         self._device_name
 
-
+    """
+        Creates Shared Access Signature. Run before another funstions
+        timeout - expiration in seconds
+    """
     def create_sas(self, timeout):
         urlToSign = urllib.parse.quote(self._url_to_sign, safe='') 
         
@@ -42,8 +50,15 @@ class DeviceClient():
                     urllib.parse.quote(base64.b64encode(h.digest()), safe = ''),
                     timestamp)
 
-    
+        return self._sas
 
+    """
+        Sends message
+        message - message to be send
+
+        Returns HTTP response code. 204 is OK.
+        https://msdn.microsoft.com/en-us/library/mt590784.aspx
+    """
     def send(self, message):
         headers = {
             self._HEADER_AUTHORIZATION : self._sas,
@@ -61,6 +76,18 @@ class DeviceClient():
             return_code = f.code
 
         return return_code
+
+    """
+        Reads first message in queue
+
+        Returns:
+        message['headers'] - all response headers
+        message['etag'] - message id, you need this for complete, reject and abandon
+        message['body'] - message content
+        message['response_code'] - HTTP response code
+
+        https://msdn.microsoft.com/en-us/library/mt590786.aspx
+    """
 
     def read_message(self):
         headers = {
@@ -86,6 +113,13 @@ class DeviceClient():
 
         return message
 
+    """
+        Completes a cloud-to-device message.
+        id - use message['etag'] from read_message function
+        
+        Returns HTTP response code. 204 is OK.
+        https://msdn.microsoft.com/en-us/library/mt605155.aspx
+    """
     def complete_message(self, id):
         headers = {
             self._HEADER_AUTHORIZATION : self._sas,
@@ -102,6 +136,14 @@ class DeviceClient():
 
         return return_code
     
+    """
+        Completes a cloud-to-device message.
+        id - use message['etag'] from read_message function
+        
+        Returns HTTP response code. 204 is OK.
+
+        https://msdn.microsoft.com/en-us/library/mt590787.aspx
+    """
     def reject_message(self, id):
         headers = {
                         self._HEADER_AUTHORIZATION : self._sas,
