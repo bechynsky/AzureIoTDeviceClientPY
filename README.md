@@ -1,4 +1,6 @@
-# Azure IoT DeviceClient for Python
+# Azure IoT Hub DeviceClient for Python
+
+Basic library for [Azure IoT Hub REST API](https://msdn.microsoft.com/en-us/library/mt590785.aspx). It doesn't implement all functions. Tested with Python 3.
 
 ```python
 import DeviceClient
