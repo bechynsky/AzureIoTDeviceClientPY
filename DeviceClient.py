@@ -159,3 +159,28 @@ class DeviceClient():
             return_code = f.code
 
         return return_code
+
+    """
+        Abandon a cloud-to-device message
+        id - use message['etag'] from read_message function
+        
+        Returns HTTP response code. 204 is OK.
+
+        https://msdn.microsoft.com/en-us/library/mt590788.aspx
+    """
+    def abandon_message(self, id):
+        headers = {
+                        self._HEADER_AUTHORIZATION : self._sas,
+                    }
+
+        req = urllib.request.Request(self._base_url + 'devicebound/' + id + '/abandon?' + self._API_VERSION,
+                                '',
+                                headers,
+                                method = 'POST')
+
+        return_code = 0
+
+        with urllib.request.urlopen(req) as f:
+            return_code = f.code
+
+        return return_code
