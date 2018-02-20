@@ -9,7 +9,7 @@ class DeviceClient():
         Client for Azure IoT Hub REST API 
         https://msdn.microsoft.com/en-us/library/mt590785.aspx
     """
-    _API_VERSION = 'api-version=2015-08-15-preview'
+    _API_VERSION = 'api-version=2016-11-14'
     _HEADER_AUTHORIZATION = 'Authorization'
 
     """
